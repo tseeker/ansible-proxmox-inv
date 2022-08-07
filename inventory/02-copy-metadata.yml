@@ -1,0 +1,10 @@
+# Copy some metadata from the inv__data structure if it exists.
+plugin: constructed
+strict: false
+
+compose:
+  inv__component: inv__data.component
+  inv__fostack: inv__data.fostack
+  inv__instance: inv__data.instance
+  inv__service: inv__data.service
+  inv__subcomponent: inv__data.subcomponent
