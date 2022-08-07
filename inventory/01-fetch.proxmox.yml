@@ -8,3 +8,10 @@ want_facts: true
 facts_prefix: proxmox__
 group_prefix: proxmox__
 want_proxmox_nodes_ansible_host: false
+
+compose:
+  # Raw data read from the "```ansible"-delimitated part of the description
+  inv__data: >-
+    ( ( proxmox__description | split( '```ansible' ) )[1]
+      | split( '```' ) )[0]
+    | from_json
