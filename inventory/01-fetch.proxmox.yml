@@ -1,0 +1,10 @@
+plugin: community.general.proxmox
+
+url: https://proxmox.example.org:8006
+validate_certs: false
+user: test@pve
+password: ...
+want_facts: true
+facts_prefix: proxmox__
+group_prefix: proxmox__
+want_proxmox_nodes_ansible_host: false
