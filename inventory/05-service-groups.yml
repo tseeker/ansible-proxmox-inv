@@ -1,0 +1,34 @@
+plugin: group_creator
+strict: false
+
+groups:
+
+  # Service group, only created if the VM is managed.
+  - name: >-
+      {{ 'svc_' ~ inv__service ~ _inv__managed }}
+    parents:
+    - managed
+
+  # Service component group, created if the VM is managed and a component
+  # name is defined.
+  - name: >-
+      {{
+        'svcm_' ~ inv__service
+        ~ '_' ~ inv__component
+        ~ _inv__managed
+      }}
+    parents:
+    - 'svc_{{ inv__service }}'
+
+  # Service sub-component groups require a component to be defined as
+  # well as a sub-component. This must be checked in the service name
+  # to avoid creating the group at the root if it shouldn't be created.
+  - name: >-
+      {{
+        'svcm_' ~ inv__service
+        ~ '_' ~ inv__subcomponent
+        ~ _inv__managed
+        ~ ( inv__component | ternary('','') )
+      }}
+    parents:
+    - 'svcm_{{ inv__service }}_{{ inv__component }}'
