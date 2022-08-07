@@ -1,0 +1,52 @@
+# Construct the network, environment and failover stack groups.
+plugin: constructed
+strict: false
+
+compose:
+
+  # The network group will be determined by the VLAN of the first
+  # network interface. It will only be defined if the VM is managed.
+  inv__network: >
+    {
+      "30": "infra",
+      "31": "dmz",
+      "32": "pubapps",
+      "33": "intapps"
+    }[ proxmox__net0.tag | default("") ]
+    | default( "unknown" )
+    ~ _inv__managed
+
+  # The environment can be set by adding a field named "environment"
+  # to the VM's JSON description. If it is not set and the service instance's
+  # name is "prod", the "prod" environment is used. Failing that, the
+  # VM is added to the "dev" environment.
+  inv__environment: >-
+    inv__data.environment
+      | default(
+          ( inv__instance == "prod" ) | ternary( "prod", "dev" )
+        )
+    ~ _inv__managed
+
+  # Failover group, based on inv__fostack if it exists.
+  _inv__fostack_group: >-
+    ( inv__fostack is defined )
+      | ternary(
+          "fostack_" ~ inv__fostack | default("") ,
+          "no_failover"
+        )
+    ~ _inv__managed
+
+keyed_groups:
+
+  # Network-based group.
+  - prefix: net
+    key: inv__network
+    parent_group: by_network
+  # Environment-based group
+  - prefix: env
+    key: inv__environment
+    parent_group: by_environment
+  # Fail-over stack
+  - prefix: ''
+    key: _inv__fostack_group
+    parent_group: by_failover_stack
