@@ -1,0 +1,24 @@
+plugin: constructed
+strict: false
+
+compose:
+
+  # Service instance groups
+  _inv__instance_group: >-
+    inv__service ~ '_' ~ inv__instance ~ _inv__managed
+
+  # Service component groups
+  _inv__component_group: >-
+    inv__service ~ '_' ~ inv__subcomponent | default( inv__component )
+    ~ _inv__managed
+
+keyed_groups:
+
+  # Create service instance groups inside the main service group.
+  - prefix: svin
+    key: _inv__instance_group
+    parent_group: "svc_{{ inv__service }}"
+
+  # Add the host to the component group
+  - prefix: svcm
+    key: _inv__component_group
