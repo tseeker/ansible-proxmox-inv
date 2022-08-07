@@ -1,0 +1,10 @@
+# This generates the static parts of the hierarchical structure.
+all:
+  children:
+    managed:
+      children:
+        by_environment:
+        by_failover_stack:
+          children:
+            no_failover:
+        by_network:
