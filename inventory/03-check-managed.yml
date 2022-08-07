@@ -1,0 +1,12 @@
+# Create the _inv__managed variable, containing an empty string, if and only
+# if the metadata contains what we want AND the VM is connected to the network.
+plugin: constructed
+strict: false
+
+compose:
+  _inv__managed: >-
+    ( inv__instance and inv__service ) | ternary( '' , '' )
+    }}{% if proxmox__net0.link_down | default("0") == "1"
+    %}{{   this_variable_does_not_exist_and_so_inv_managed_will_not_be_created
+    }}{% endif
+    %}{{ ''
